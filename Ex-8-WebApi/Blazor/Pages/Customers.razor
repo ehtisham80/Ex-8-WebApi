@@ -1,0 +1,42 @@
+﻿@page "/customers"
+@using Blazor.Models
+@inject HttpClient http
+
+
+
+@code {
+
+    private List<CustomerModel> customers;
+    private CustomerCreateModel customer;
+
+
+    private async Task GetCustomers()
+    {
+        customers = await http.GetJsonAsync<List<CustomerModel>>("http://localhost:51722/api/customers");
+        StateHasChanged();
+    }
+
+
+
+    private async Task CreateCustomer()
+    {
+
+        await http.PostJsonAsync<CustomerCreateModel>("http://localhost:51722/api/customers", customer);
+        customer = new CustomerCreateModel();
+        await GetCustomers();
+    }
+
+    private async Task DeleteAllCustomers()
+    {
+        await http.DeleteAsync("http://localhost:51722/api/customers/all");
+        await GetCustomers();
+    }
+
+    private async Task DeleteCustomer(int Id)
+    {
+        await http.DeleteAsync($"http://localhost:51722/api/customers/{id}");
+        await GetCustomers();
+    }
+
+
+}
