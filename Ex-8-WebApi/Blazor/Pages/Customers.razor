@@ -8,7 +8,7 @@
     <button type="submit" class="btn btn-danger" @onclick="DeleteAllCustomers"> Delete All Customers</button>
 </div>
 
-    <EditForm class="my-5" Model="@customers" OnSubmit="@CreateCustomer">
+    <EditForm class="my-5" Model="@customer" OnSubmit="@CreateCustomer">
         <h5 class="mb-3">Create a Customer</h5>
         <div class="form-group">
            <div class="row">
@@ -36,7 +36,7 @@
                 <th scope="col" colspan="2">Email</th>
             </tr>
         </thead>
-        @if(customer != null)
+        @if(customers != null)
         {
             <tbody>
              @foreach(var customer in customers)
