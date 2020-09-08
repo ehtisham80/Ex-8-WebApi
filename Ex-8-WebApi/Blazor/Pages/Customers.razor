@@ -3,38 +3,95 @@
 @inject HttpClient http
 
 
+<div class="container">
+<div class="text-right">
+    <button type="submit" class="btn btn-danger" @onclick="DeleteAllCustomers"> Delete All Customers</button>
+</div>
+
+    <EditForm class="my-5" Model="@customers" OnSubmit="@CreateCustomer">
+        <h5 class="mb-3">Create a Customer</h5>
+        <div class="form-group">
+           <div class="row">
+               <div class="col">
+                   <input type="text" class="form-control" placeholder="First Name..." @bind="customer.FirstName" />
+               </div>
+               <div class="col">
+                   <input type="text" class="form-control" placeholder="Last Name..." @bind="customer.LastName" >
+               </div>
+           </div>
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Email..." @bind="customer.Email"  >
+        </div>
+
+        <button type="submit" class="btn btn-success">Create Customer</button>
+    </EditForm>
+
+    <table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col" colspan="2">Email</th>
+            </tr>
+        </thead>
+        @if(customer != null)
+        {
+            <tbody>
+             @foreach(var customer in customers)
+             {
+                <tr>
+                    <th scope="row">@customer.Id</th>
+                    <td scope="row">@customer.FirstName</td>
+                    <td scope="row">@customer.LastName</td>
+                    <td scope="row">@customer.Email</td>
+                    <td class="text-center">
+                        <span style="cursor:pointer" class="oi oi-trash" @onclick="() => DeleteCustomer(customer.Id)"></span>
+                    </td>
+                </tr>
+             }
+
+            </tbody>
+        }
+
+    </table>
+</div>
 
 @code {
 
     private List<CustomerModel> customers;
     private CustomerCreateModel customer;
 
-
     private async Task GetCustomers()
     {
-        customers = await http.GetJsonAsync<List<CustomerModel>>("http://localhost:51722/api/customers");
+        customers = await http.GetJsonAsync<List<CustomerModel>>("http://localhost:60663/api/customers");
         StateHasChanged();
     }
-
-
 
     private async Task CreateCustomer()
     {
 
-        await http.PostJsonAsync<CustomerCreateModel>("http://localhost:51722/api/customers", customer);
+        await http.PostJsonAsync<CustomerCreateModel>("http://localhost:60663/api/customers", customer);
         customer = new CustomerCreateModel();
         await GetCustomers();
     }
 
     private async Task DeleteAllCustomers()
     {
-        await http.DeleteAsync("http://localhost:51722/api/customers/all");
+        await http.DeleteAsync("http://localhost:60663/api/all");
         await GetCustomers();
     }
 
     private async Task DeleteCustomer(int Id)
     {
-        await http.DeleteAsync($"http://localhost:51722/api/customers/{id}");
+        await http.DeleteAsync($"http://localhost:60663/api/customers/{Id}");
+        await GetCustomers();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        customer = new CustomerCreateModel();
         await GetCustomers();
     }
 
